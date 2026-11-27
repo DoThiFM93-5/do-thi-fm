@@ -23,7 +23,7 @@ window.DTFM_CONFIG = {
     intro: 'Đô Thị FM là kênh phát thanh chuyên về giao thông, đô thị và đời sống người dân TP.HCM. ' +
            'Chúng tôi cập nhật tình hình đường sá từng giờ, chuyển phản ánh của thính giả tới cơ quan chức năng ' +
            'và kể những câu chuyện đang diễn ra trên từng con phố.',
-    coverage: 'TP.HCM và vùng lân cận (giả định)',
+    coverage: 'TP.HCM và vùng lân cận',
     hotline: '0901 234 567',           // số hiển thị trên web
     hotlineTel: '0901234567',          // số dùng cho nút bấm gọi trên điện thoại (viết liền, không dấu cách)
     email: 'radiowebproject@gmail.com',

@@ -397,7 +397,23 @@ button { font: inherit; color: inherit; }
 }
 .progress input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px var(--accent); }
 .progress input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px var(--accent); }
+/* Kéo thả: thanh tự xử lý chuột/ngón tay (js/player.js), ô range chỉ còn dùng cho bàn phím */
+.progress { cursor: pointer; touch-action: none; -webkit-user-select: none; user-select: none; }
+.progress input[type="range"] { pointer-events: none; }
+.progress__rail { transition: height .12s; }
+.progress:hover .progress__rail, .progress.is-dragging .progress__rail { height: 9px; }
+.progress input[type="range"]::-webkit-slider-thumb { transition: transform .12s; }
+.progress:hover input[type="range"]::-webkit-slider-thumb, .progress.is-dragging input[type="range"]::-webkit-slider-thumb { transform: scale(1.25); }
+.progress:hover input[type="range"]::-moz-range-thumb, .progress.is-dragging input[type="range"]::-moz-range-thumb { transform: scale(1.25); }
+.progress__tip {
+  position: absolute; bottom: calc(100% + 2px); left: 0; z-index: 2; transform: translateX(-50%);
+  padding: 3px 8px; border-radius: 6px; background: var(--text); color: var(--bg);
+  font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity .1s;
+}
+.progress.is-dragging .progress__tip { opacity: 1; }
 .progress--thin { height: 20px; margin-top: 0; }
+.progress--thin:hover .progress__rail, .progress--thin.is-dragging .progress__rail { height: 6px; }
 .progress--thin .progress__rail { height: 4px; }
 .progress--thin input[type="range"] { height: 20px; }
 .progress--thin input[type="range"]::-webkit-slider-runnable-track { height: 20px; }

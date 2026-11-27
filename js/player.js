@@ -103,6 +103,14 @@
     track.style.setProperty('--avail', (clamp(avail, 0, 1) * 100).toFixed(3) + '%');
     track.style.setProperty('--avail-n', clamp(avail, 0, 1).toFixed(5));
   }
+  /* Ô thời gian nhỏ phía trên nút tròn khi đang kéo */
+  function renderTip(v, shown, dur) {
+    if (!v.tip) return;
+    if (!v.dragging) return;
+    var w = v.track.clientWidth;
+    v.tip.style.left = (8 + clamp(dur ? shown / dur : 0, 0, 1) * Math.max(0, w - 16)) + 'px';
+    setText(v.tip, U.fmt(shown));
+  }
   function sectionIndexAt(t) {
     var idx = -1;
     for (var i = 0; i < SECTIONS.length; i++) { if (t >= SECTIONS[i].start) idx = i; }
@@ -148,12 +156,49 @@
     on(v.close, 'click', function () { ctrl.close(); });
     on(v.start, 'click', function () { ctrl.start(); });
     on(v.restart, 'click', function () { ctrl.restart(); });
-    if (v.seek) {
-      v.seek.addEventListener('pointerdown', function () { v.dragging = true; });
-      ['pointerup', 'pointercancel', 'change', 'blur'].forEach(function (ev) {
-        v.seek.addEventListener(ev, function () { v.dragging = false; });
+    if (v.seek && v.track) {
+      /* Kéo thanh tiến độ kiểu YouTube: nhấn giữ rồi kéo, nút tròn đi theo chuột/ngón tay,
+         hiện thời gian đang trỏ tới; thả ra mới tua âm thanh (đỡ giật khi file nằm trên mạng).
+         Nghe trực tiếp: nút tròn dừng ở mốc trực tiếp, không kéo vượt qua được. */
+      var tip = document.createElement('span');
+      tip.className = 'progress__tip';
+      tip.setAttribute('aria-hidden', 'true');
+      v.track.appendChild(tip);
+      v.tip = tip;
+      var dragPreview = function (clientX) {
+        var r = v.track.getBoundingClientRect();
+        var ratio = clamp((clientX - r.left - 8) / Math.max(1, r.width - 16), 0, 1);
+        var t = ratio * (ctrl.duration || 0);
+        var lim = ctrl.maxSeekable();
+        if (t > lim) {
+          t = lim;
+          if (!v.hitEdge) { v.hitEdge = true; toast('Đây là mốc trực tiếp – không thể tua tới.'); }
+        }
+        v.dragValue = Math.max(0, t);
+        ctrl.render();
+      };
+      var dragEnd = function (commit) {
+        if (!v.dragging) return;
+        v.dragging = false;
+        v.track.classList.remove('is-dragging');
+        if (commit) ctrl.seekTo(v.dragValue, false);
+        else ctrl.render();
+      };
+      v.track.addEventListener('pointerdown', function (e) {
+        if ((e.pointerType === 'mouse' && e.button !== 0) || !ctrl.canSeek()) return;
+        e.preventDefault();
+        v.dragging = true;
+        v.hitEdge = false;
+        v.track.classList.add('is-dragging');
+        try { v.track.setPointerCapture(e.pointerId); } catch (err) { /* bỏ qua */ }
+        try { v.seek.focus({ preventScroll: true }); } catch (err) { /* bỏ qua */ }
+        dragPreview(e.clientX);
       });
-      // Kéo thanh tua: bộ điều khiển tự chặn nếu vượt mốc trực tiếp
+      v.track.addEventListener('pointermove', function (e) { if (v.dragging) dragPreview(e.clientX); });
+      v.track.addEventListener('pointerup', function () { dragEnd(true); });
+      v.track.addEventListener('lostpointercapture', function () { dragEnd(true); });
+      v.track.addEventListener('pointercancel', function () { dragEnd(false); });
+      // Trường hợp thanh tua nhận giá trị từ công cụ hỗ trợ (trình đọc màn hình...)
       v.seek.addEventListener('input', function () {
         var t = ctrl.seekTo(parseFloat(v.seek.value) || 0, true);
         v.seek.value = t;
@@ -277,6 +322,8 @@
       if (this.pendingSeek != null) return this.pendingSeek;
       return this.audio ? (this.audio.currentTime || 0) : 0;
     },
+    canSeek: function () { return this.state === 'active'; },
+    maxSeekable: function () { return this.edge(); },   // không kéo vượt mốc trực tiếp
 
     /* Lưới an toàn: nếu vị trí phát vượt mốc trực tiếp (do phím tắt, công cụ trình duyệt...) thì kéo lại */
     enforce: function () {
@@ -453,13 +500,15 @@
         r.classList.toggle('needs-resume', self.needsResume);
         showWhen(r, self.state);
         setPlayBtn(v.play, playing && !self.needsResume, ['Phát', 'Tạm dừng']);
+        var shown = v.dragging ? v.dragValue : t;   // đang kéo: hiển thị vị trí đang kéo tới
         if (v.seek) {
           if (String(v.seek.max) !== String(Math.round(dur))) v.seek.max = Math.round(dur);
-          if (!v.dragging) v.seek.value = t;
-          v.seek.setAttribute('aria-valuetext', U.fmt(t) + ' trên ' + U.fmt(dur) + (self.state === 'active' ? ', mốc trực tiếp ' + U.fmt(edge) : ''));
+          v.seek.value = shown;
+          v.seek.setAttribute('aria-valuetext', U.fmt(shown) + ' trên ' + U.fmt(dur) + (self.state === 'active' ? ', mốc trực tiếp ' + U.fmt(edge) : ''));
         }
-        paintTrack(v.track, t / dur, edge / dur);
-        setText(v.cur, U.fmt(t));
+        paintTrack(v.track, shown / dur, edge / dur);
+        renderTip(v, shown, dur);
+        setText(v.cur, U.fmt(shown));
         setText(v.dur, U.fmt(dur));
         setText(v.lag, behind ? 'Trễ ' + U.fmt(lag) + ' so với trực tiếp' : 'Bạn đang ở mốc trực tiếp');
         if (v.golive) v.golive.hidden = !behind;
@@ -586,6 +635,8 @@
       if (this.pendingSeek != null) return this.pendingSeek;
       return this.audio ? (this.audio.currentTime || 0) : 0;
     },
+    canSeek: function () { return !!this.item && this.available !== false && this.duration > 0; },
+    maxSeekable: function () { return this.duration || 0; },
 
     /* Mở một chương trình để nghe lại */
     open: function (idOrItem, opts) {
@@ -687,14 +738,16 @@
         r.classList.toggle('needs-resume', self.needsResume);
         showWhen(r, state);
         setPlayBtn(v.play, playing && !self.needsResume, ['Phát', 'Tạm dừng']);
+        var shown = v.dragging ? v.dragValue : t;   // đang kéo: hiển thị vị trí đang kéo tới
         if (v.seek) {
           var max = Math.max(1, Math.round(dur));
           if (String(v.seek.max) !== String(max)) v.seek.max = max;
-          if (!v.dragging) v.seek.value = t;
-          v.seek.setAttribute('aria-valuetext', U.fmt(t) + ' trên ' + U.fmt(dur));
+          v.seek.value = shown;
+          v.seek.setAttribute('aria-valuetext', U.fmt(shown) + ' trên ' + U.fmt(dur));
         }
-        paintTrack(v.track, dur ? t / dur : 0, 1);
-        setText(v.cur, U.fmt(t));
+        paintTrack(v.track, dur ? shown / dur : 0, 1);
+        renderTip(v, shown, dur);
+        setText(v.cur, U.fmt(shown));
         setText(v.dur, U.fmt(dur));
         if (self.item) {
           setText(v.title, self.item.title);

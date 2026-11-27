@@ -236,7 +236,13 @@ button { font: inherit; color: inherit; }
 }
 .ticker__viewport { flex: 1; overflow: hidden; display: flex; align-items: center; padding-left: 18px; }
 .ticker__track { display: inline-flex; white-space: nowrap; animation: ticker var(--ticker-dur, 60s) linear infinite; will-change: transform; }
-.ticker:hover .ticker__track, .ticker:focus-within .ticker__track { animation-play-state: paused; }
+.ticker:hover .ticker__track, .ticker__viewport:focus .ticker__track, .ticker.is-paused .ticker__track { animation-play-state: paused; }
+.ticker__toggle {
+  flex: none; display: grid; place-items: center; width: 40px; border: 0; border-left: 1px solid var(--line);
+  background: var(--bg-2); color: var(--text-2); cursor: pointer;
+}
+.ticker__toggle:hover { color: var(--text); background: var(--surface); }
+.ticker__toggle svg { width: 16px; height: 16px; }
 .ticker__item { display: inline-flex; align-items: center; gap: 12px; padding-right: 28px; font-size: 14.5px; color: var(--text-2); }
 .ticker__item::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -575,8 +581,33 @@ button { font: inherit; color: inherit; }
 .lv-dong { --lv: var(--accent); }
 .lv-un-tac { --lv: var(--live); }
 
+.map-side { display: grid; gap: 10px; align-content: start; }
 .hs-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-@media (min-width: 960px) { .hs-list { max-height: 640px; overflow-y: auto; padding-right: 4px; } }
+@media (min-width: 960px) { .hs-list { max-height: 548px; overflow-y: auto; padding-right: 4px; } }
+
+/* Trụ sở kênh */
+.st-dot { width: 13px; height: 13px; border-radius: 4px; background: var(--accent); flex: none; box-shadow: 0 0 0 3px rgba(255, 178, 30, .25); }
+.station-item {
+  width: 100%; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; text-align: left;
+  padding: 12px 14px; border-radius: var(--radius-sm); cursor: pointer; color: var(--text);
+  background: rgba(255, 178, 30, .1); border: 1px solid rgba(255, 178, 30, .45);
+}
+.station-item:hover { background: rgba(255, 178, 30, .16); }
+.station-item svg { width: 40px; height: 40px; }
+.station-item small { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.station-item strong { display: block; font-size: 15px; line-height: 1.35; }
+.station-item span span { display: block; color: var(--text-2); font-size: 13.5px; }
+.st-marker { background: none; border: 0; }
+.st-pin {
+  position: relative; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  padding: 3px 10px 3px 3px; border-radius: 999px; background: var(--accent); color: var(--accent-ink);
+  font: 800 12.5px/1 var(--font); box-shadow: 0 6px 16px rgba(0, 0, 0, .5);
+}
+.st-pin svg { width: 28px; height: 28px; border-radius: 50%; }
+.st-pin::after {
+  content: ""; position: absolute; left: 11px; bottom: -7px; border: 6px solid transparent; border-bottom: 0;
+  border-top: 8px solid var(--accent);
+}
 .hs-item {
   width: 100%; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; text-align: left;
   padding: 12px 14px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--line); cursor: pointer; color: var(--text);
@@ -756,10 +787,10 @@ button { font: inherit; color: inherit; }
 }
 .toast.is-show { opacity: 1; transform: translate(-50%, 0); }
 
-/* ---------- Giảm chuyển động ---------- */
+/* ---------- Giảm chuyển động ----------
+   Khi máy bật "giảm chuyển động" (Windows: tắt Animation effects), chỉ tắt cuộn mượt và hiệu ứng chuyển cảnh.
+   Thanh tin nhanh, chấm ON AIR, equalizer vẫn chạy; thanh tin nhanh có nút Tạm dừng. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
-  .ticker__track { animation: none !important; }
-  .ticker__viewport { overflow-x: auto; scrollbar-width: none; }
-  .ticker__viewport::-webkit-scrollbar { display: none; }
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .001ms !important; }
 }

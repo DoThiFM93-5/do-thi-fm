@@ -246,8 +246,8 @@
           '</ul></div>' +
           '<div><p class="footer__title">Liên hệ</p><div class="footer__contact">' +
             '<span>Hotline: <strong>' + tel + '</strong></span>' +
-            '<span>Email: ' + esc(STATION.email || '') + '</span>' +
-            '<span>' + esc(STATION.address || '') + '</span>' +
+            '<span>Email: <a href="mailto:' + esc(STATION.email || '') + '">' + esc(STATION.email || '') + '</a></span>' +
+            '<span>' + esc(STATION.address || '') + ' · <a href="ban-do.html#tru-so">Xem bản đồ</a></span>' +
             '<span>' + esc(STATION.onAirHours || '') + ' trên ' + esc(STATION.frequencyLabel || '') + '</span>' +
           '</div></div>' +
         '</div>' +
@@ -270,8 +270,18 @@
       '<div class="ticker__viewport" tabindex="0" aria-label="Tin nhanh – rê chuột hoặc chọn để dừng chạy chữ">' +
         '<div class="ticker__track" aria-hidden="true">' + row + row + '</div>' +
       '</div>' +
+      '<button type="button" class="ticker__toggle" aria-pressed="false" aria-label="Tạm dừng tin nhanh">' + ICONS.pause + '</button>' +
       '<ul class="sr-only">' + items.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
     $('.ticker__track', el).style.setProperty('--ticker-dur', Math.max(30, Math.round(chars * 0.22)) + 's');
+    // Nút tạm dừng / chạy tiếp chữ chạy
+    var tg = $('.ticker__toggle', el);
+    tg.addEventListener('click', function () {
+      var paused = !el.classList.contains('is-paused');
+      el.classList.toggle('is-paused', paused);
+      tg.setAttribute('aria-pressed', paused ? 'true' : 'false');
+      tg.setAttribute('aria-label', paused ? 'Chạy tiếp tin nhanh' : 'Tạm dừng tin nhanh');
+      tg.innerHTML = paused ? ICONS.play : ICONS.pause;
+    });
   }
 
   /* ---------------- Trang chủ: lịch hôm nay (rút gọn) ---------------- */
@@ -444,6 +454,29 @@
     var markers = {};
     var map = null;
     var activeId = null;
+    var st = STATION.location && typeof STATION.location.lat === 'number' ? STATION.location : null;
+    var stMarker = null;
+
+    function stationPopup() {
+      return '<strong>' + esc(STATION.name || '') + ' – ' + esc(STATION.frequencyLabel || '') + '</strong><br>' +
+        esc(STATION.address || '') + '<br>Hotline: <strong>' + esc(STATION.hotline || '') + '</strong>';
+    }
+    function focusStation() {
+      if (!map || !stMarker) return;
+      map.flyTo([st.lat, st.lng], 16, { duration: 0.8 });
+      stMarker.openPopup();
+    }
+    // Thẻ trụ sở kênh phía trên danh sách
+    var stCard = document.getElementById('station-card');
+    if (stCard && st) {
+      stCard.innerHTML = '<button type="button" class="station-item" id="tru-so">' + logoSVG() +
+        '<span><small>Trụ sở kênh</small><strong>' + esc(STATION.name || '') + ' · ' + esc(STATION.frequencyLabel || '') + '</strong>' +
+        '<span>' + esc(STATION.address || '') + '</span></span></button>';
+      stCard.firstChild.addEventListener('click', function () {
+        focusStation();
+        if (window.matchMedia('(max-width: 959px)').matches) mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }
 
     function popupHTML(h) {
       return '<strong>' + esc(h.name) + '</strong><br><span style="color:var(--text-2)">' + esc(h.road) + '</span><br>' +
@@ -483,7 +516,15 @@
         m.addTo(map);
         markers[h._i] = m;
       });
-      if (spots.length) map.fitBounds(spots.map(function (h) { return [h.lat, h.lng]; }), { padding: [30, 30] });
+      var pts = spots.map(function (h) { return [h.lat, h.lng]; });
+      if (st) {
+        stMarker = window.L.marker([st.lat, st.lng], {
+          title: (STATION.name || '') + ' – trụ sở kênh', alt: STATION.name, zIndexOffset: 1000,
+          icon: window.L.divIcon({ className: 'st-marker', html: '<span class="st-pin">' + logoSVG() + esc(STATION.name || '') + '</span>', iconSize: [120, 36], iconAnchor: [17, 42], popupAnchor: [0, -40] })
+        }).bindPopup(stationPopup()).addTo(map);
+        pts.push([st.lat, st.lng]);
+      }
+      if (pts.length) map.fitBounds(pts, { padding: [30, 30] });
     } else {
       mapEl.innerHTML = '<div class="map-fallback"><p>Không tải được bản đồ (cần kết nối Internet).<br>Danh sách điểm nóng vẫn hiển thị bên dưới.</p></div>';
     }
@@ -539,6 +580,8 @@
       });
     }
     draw();
+    // Mở từ link "Xem trên bản đồ" (ban-do.html#tru-so) → bay tới trụ sở kênh
+    if (window.location.hash === '#tru-so') setTimeout(focusStation, 400);
   }
 
   /* ---------------- Trang giới thiệu ---------------- */
@@ -577,6 +620,9 @@
       var v = CFG;
       for (var i = 0; i < path.length && v != null; i++) v = v[path[i]];
       if (v != null && typeof v !== 'object') el.textContent = v;
+    });
+    document.querySelectorAll('[data-cfg-mail]').forEach(function (el) {
+      if (STATION.email) el.setAttribute('href', 'mailto:' + STATION.email);
     });
     document.querySelectorAll('[data-cfg-tel]').forEach(function (el) {
       if (STATION.hotlineTel) el.setAttribute('href', 'tel:' + STATION.hotlineTel);

@@ -34,14 +34,19 @@
           <span><span class="lv-dot lv-thong-thoang"></span>Thông thoáng</span>
           <span><span class="lv-dot lv-dong"></span>Đông xe</span>
           <span><span class="lv-dot lv-un-tac"></span>Ùn tắc</span>
+          <span><span class="st-dot"></span>Trụ sở Đô Thị FM</span>
         </div>
         <div class="filters" id="map-filters" role="group" aria-label="Lọc theo mức độ"></div>
         <div class="map-layout">
           <div class="map-box">
             <div id="map" role="region" aria-label="Bản đồ điểm nóng giao thông TP.HCM"></div>
           </div>
-          <!-- Danh sách lấy từ HOTSPOTS trong js/config.js -->
-          <ul class="hs-list" id="hotspot-list" aria-label="Danh sách điểm nóng"></ul>
+          <div class="map-side">
+            <!-- Trụ sở kênh: lấy từ STATION.address và STATION.location trong js/config.js -->
+            <div id="station-card"></div>
+            <!-- Danh sách lấy từ HOTSPOTS trong js/config.js -->
+            <ul class="hs-list" id="hotspot-list" aria-label="Danh sách điểm nóng"></ul>
+          </div>
         </div>
       </div>
     </section>

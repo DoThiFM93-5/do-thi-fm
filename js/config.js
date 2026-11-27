@@ -24,10 +24,12 @@ window.DTFM_CONFIG = {
            'Chúng tôi cập nhật tình hình đường sá từng giờ, chuyển phản ánh của thính giả tới cơ quan chức năng ' +
            'và kể những câu chuyện đang diễn ra trên từng con phố.',
     coverage: 'TP.HCM và vùng lân cận (giả định)',
-    hotline: '09xx xxx xxx',           // TODO: nhóm cập nhật số hotline (có thể để số giả định)
-    hotlineTel: '',                    // TODO: nhóm cập nhật, ví dụ '0912345678' để bấm gọi được. Để trống = không tạo link gọi
-    email: 'email.nhom@example.com',   // TODO: nhóm cập nhật email nhận phản ánh
-    address: 'TP. Hồ Chí Minh (địa chỉ giả định)',
+    hotline: '0901 234 567',           // số hiển thị trên web
+    hotlineTel: '0901234567',          // số dùng cho nút bấm gọi trên điện thoại (viết liền, không dấu cách)
+    email: 'radiowebproject@gmail.com',
+    address: 'Số 8 Nguyễn Văn Tráng, phường Bến Thành, Thành phố Hồ Chí Minh',
+    // Vị trí trụ sở kênh – hiện trên trang Bản đồ (lat, lng lấy từ Google Maps: chuột phải vào địa điểm)
+    location: { lat: 10.7709, lng: 106.6917 },
     onAirHours: 'Phát sóng 24/7',
     // Thông tin bài tập – hiện ở chân trang và trang Giới thiệu
     course: 'Sản xuất chương trình giải trí phát thanh',
@@ -91,54 +93,55 @@ window.DTFM_CONFIG = {
      - cover: đường dẫn ảnh trong thư mục img/ (để trống '' thì web tự vẽ ảnh bìa)
      - tag: nhãn thể loại ngắn */
   ARCHIVE: [
+    // TODO: nhóm cập nhật – ngày phát và mô tả đang để tạm, sửa lại cho đúng nội dung từng bài
     {
-      id: 'phong-su-cau-sai-gon',
-      title: 'Một buổi sáng trên cầu Sài Gòn',
+      id: 'nhip-dap-giao-thong',
+      title: 'Nhịp đập Giao thông',
+      tag: 'Chương trình',
+      date: '2026-11-20',
+      duration: '11:26',
+      description: 'Chương trình phát thanh về nhịp sống trên đường phố: thông tin giao thông, câu chuyện của người tham gia giao thông và những lời nhắc an toàn.',
+      audio: 'audio/luu-tru/nhip-dap-giao-thong.mp3',
+      cover: ''
+    },
+    {
+      id: 'phong-su-lop-hoc-radio',
+      title: 'Lớp học Radio',
       tag: 'Phóng sự',
-      date: '2026-10-08',
-      duration: '12:40',
-      description: 'Từ 6 giờ sáng, dòng xe từ phía Đông đổ về trung tâm. Phóng viên đứng ở chân cầu ghi lại nhịp đi lại của người lao động.',
-      audio: 'audio/luu-tru/phong-su-cau-sai-gon.mp3',   // TODO: nhóm cập nhật
+      date: '2026-11-13',
+      duration: '01:43',
+      description: 'Phóng sự ngắn về một lớp học làm phát thanh, nơi những giọng đọc mới tập làm quen với micro.',
+      audio: 'audio/luu-tru/phong-su-lop-hoc-radio.mp3',
       cover: ''
     },
     {
-      id: 'ban-tin-chieu-thu-nghiem',
-      title: 'Bản tin giao thông chiều – số thử nghiệm',
-      tag: 'Bản tin',
-      date: '2026-10-15',
-      duration: '08:15',
-      description: 'Bản tin ngắn đầu tiên của nhóm: tình hình giờ tan tầm, phân luồng quanh nút giao An Phú và lời nhắc an toàn khi trời mưa.',
-      audio: 'audio/luu-tru/ban-tin-chieu.mp3',           // TODO: nhóm cập nhật
-      cover: ''
-    },
-    {
-      id: 'talkshow-xe-buyt',
-      title: 'Xe buýt còn là lựa chọn của người trẻ?',
+      id: 'talkshow-the-exception',
+      title: 'The Exception',
       tag: 'Talkshow',
-      date: '2026-10-22',
-      duration: '18:30',
-      description: 'Hai khách mời sinh viên tranh luận chuyện đi xe buýt: tiện, rẻ nhưng vẫn ngại. Thính giả gọi vào kể trải nghiệm của mình.',
-      audio: 'audio/luu-tru/talkshow-xe-buyt.mp3',        // TODO: nhóm cập nhật
+      date: '2026-11-06',
+      duration: '29:52',
+      description: 'Talkshow trò chuyện cùng khách mời, mở rộng góc nhìn quanh những câu chuyện "ngoại lệ" trong đời sống.',
+      audio: 'audio/luu-tru/talkshow-the-exception.mp3',
       cover: ''
     },
     {
-      id: 'phong-van-tai-xe-cong-nghe',
-      title: 'Tài xế công nghệ và giờ cao điểm',
-      tag: 'Phỏng vấn',
-      date: '2026-11-03',
-      duration: '10:05',
-      description: 'Một ngày chạy xe 10 tiếng: tài xế kể về những tuyến nên tránh, mẹo canh giờ và chuyện an toàn khi chở khách.',
-      audio: 'audio/luu-tru/phong-van-tai-xe.mp3',        // TODO: nhóm cập nhật
+      id: 'giai-dieu-duong-pho',
+      title: 'Giai điệu đường phố',
+      tag: 'Âm nhạc',
+      date: '2026-10-30',
+      duration: '13:37',
+      description: 'Chương trình âm nhạc gửi tới thính giả những ca khúc về phố phường, đi cùng lời dẫn nhẹ nhàng.',
+      audio: 'audio/luu-tru/giai-dieu-duong-pho.mp3',
       cover: ''
     },
     {
-      id: 'tieu-pham-non-bao-hiem',
-      title: 'Nón bảo hiểm và một trăm lý do',
-      tag: 'Tiểu phẩm',
-      date: '2026-11-12',
-      duration: '06:50',
-      description: 'Tiểu phẩm vui về những lý do "đi gần thôi mà" để không đội nón bảo hiểm, và cái kết khiến ai cũng phải nghĩ lại.',
-      audio: 'audio/luu-tru/tieu-pham-non-bao-hiem.mp3',  // TODO: nhóm cập nhật
+      id: 'truyen-ma-dem-khuya',
+      title: 'Truyện ma đêm khuya',
+      tag: 'Truyện kể',
+      date: '2026-10-23',
+      duration: '03:59',
+      description: 'Một câu chuyện rùng rợn kể lúc nửa đêm, dành cho thính giả thích cảm giác hồi hộp. Nên nghe bằng tai nghe.',
+      audio: 'audio/luu-tru/truyen-ma-dem-khuya.mp3',
       cover: ''
     }
   ],
@@ -149,7 +152,7 @@ window.DTFM_CONFIG = {
     'Nút giao An Phú: phân luồng xe tải từ 6:00 đến 9:00',
     'Va chạm giữa xe máy và ô tô trên đường Cộng Hòa, một làn bị chiếm dụng',
     'Mưa lớn dự báo chiều nay, đường Nguyễn Hữu Cảnh có thể ngập cục bộ',
-    'Hotline phản ánh giao thông Đô Thị FM: 09xx xxx xxx', // TODO: nhóm cập nhật
+    'Hotline phản ánh giao thông Đô Thị FM: 0901 234 567',
     'Bản tin sáng phát lúc 8:00 hằng ngày trên FM 93.5 MHz'
   ],
 

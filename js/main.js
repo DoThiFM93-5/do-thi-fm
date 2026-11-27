@@ -463,7 +463,9 @@
       }
       tabs.innerHTML = html;
       var first = dayAt(week, 0), last = dayAt(week, 6);
-      if (weekLabel) weekLabel.textContent = (week === 0 ? 'Tuần này · ' : 'Tuần ' + (week + 1) + ' · ') + ddmm(first) + ' – ' + ddmm(last) + '/' + last.y;
+      // Tuần chứa ngày hôm nay (theo giờ Việt Nam lúc mở trang) ghi "Tuần này", các tuần khác chỉ ghi ngày
+      var isThisWeek = today.ms >= first.ms && today.ms <= last.ms;
+      if (weekLabel) weekLabel.textContent = (isThisWeek ? 'Tuần này · ' : '') + ddmm(first) + ' – ' + ddmm(last) + '/' + last.y;
       if (prevBtn) prevBtn.disabled = week <= 0;
       if (nextBtn) nextBtn.disabled = week >= weekCount - 1;
     }

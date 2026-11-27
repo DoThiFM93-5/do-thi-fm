@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đô Thị FM 93.5 – Kết nối nhịp đường phố</title>
+  <meta name="description" content="Đô Thị FM 93.5 MHz – kênh phát thanh giao thông, đô thị và đời sống TP.HCM. Nghe trực tiếp Bản tin sáng 8:00.">
+  <meta name="theme-color" content="#0A1628">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23FFB21E'/%3E%3Cpath d='M8.5 40 L18 21.5 h4 L31.5 40 Z' fill='%230A1628'/%3E%3Cpath d='M13.6 15.5a6.4 6.4 0 0 1 12.8 0' fill='none' stroke='%230A1628' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='20' cy='15.8' r='2.8' fill='%230A1628'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="home">
+  <a class="skip-link" href="#live-player">Bỏ qua, đến trình phát trực tiếp</a>
+  <header id="site-header" class="site-header"></header>
+  <div id="ticker" class="ticker" role="region" aria-label="Tin nhanh"></div>
+
+  <main id="main">
+    <!-- ============ KHỐI NGHE TRỰC TIẾP ============ -->
+    <section class="hero" aria-label="Nghe trực tiếp">
+      <div class="container hero__grid">
+
+        <!-- Nội dung chữ (tên chương trình, chủ đề...) lấy từ js/config.js -->
+        <div class="live" id="live-player" data-state="idle" tabindex="-1">
+          <div class="live__top">
+            <span class="live-badge" data-role="badge"><span class="onair-dot"></span><span data-role="badge-text">ĐANG PHÁT TRỰC TIẾP</span></span>
+            <span class="live__freq" data-role="freq">FM 93.5 MHz</span>
+          </div>
+          <p class="live__kicker" data-role="slot">Bản tin sáng · 8:00</p>
+          <h1 class="live__title" data-role="title">Bản tin sáng Đô Thị FM</h1>
+          <p class="live__topic" data-role="topic"></p>
+          <p class="live__hosts" data-role="hosts"></p>
+
+          <!-- Chưa bắt đầu -->
+          <div class="live__panel" data-when="idle">
+            <button type="button" class="btn-listen" data-role="start" aria-label="Nghe trực tiếp">
+              <span class="btn-listen__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.6v12.8a1 1 0 0 0 1.52.85l10.2-6.4a1 1 0 0 0 0-1.7L9.52 4.75A1 1 0 0 0 8 5.6z" fill="currentColor"/></svg></span>
+              <span>Nghe trực tiếp</span>
+            </button>
+            <p class="live__hint" data-role="idle-hint"></p>
+          </div>
+
+          <!-- Chế độ phát theo giờ: ngoài giờ phát -->
+          <div class="live__panel" data-when="waiting" hidden>
+            <div class="notice">
+              <span class="notice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <div>
+                <h2>Chương trình tiếp theo lúc <span data-role="next-time">8:00</span></h2>
+                <p>Còn <span class="countdown" data-role="countdown">--:--:--</span> nữa lên sóng. Trong lúc chờ, mời bạn nghe lại các số đã phát.</p>
+                <a class="btn btn--ghost btn--sm" href="#da-phat">Nghe lại chương trình</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chưa có file audio hoặc file lỗi -->
+          <div class="live__panel" data-when="unavailable" hidden>
+            <div class="notice">
+              <span class="notice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.2" fill="currentColor"/><path d="M8.2 8.2a5.4 5.4 0 0 0 0 7.6M15.8 8.2a5.4 5.4 0 0 1 0 7.6M5.4 5.4a9.3 9.3 0 0 0 0 13.2M18.6 5.4a9.3 9.3 0 0 1 0 13.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <div>
+                <h2>Chương trình sắp lên sóng</h2>
+                <p>Ê-kíp đang hoàn tất bản tin. Mời bạn quay lại sau ít phút, hoặc nghe lại các chương trình đã phát bên dưới.</p>
+                <a class="btn btn--ghost btn--sm" href="#da-phat">Nghe lại chương trình</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Đang trong phiên nghe -->
+          <div data-when="active" hidden>
+            <div class="live__now">
+              <span class="eq" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
+              <div>
+                <span class="live__now-label">Đang phát</span>
+                <span class="live__now-name" data-role="section"></span>
+              </div>
+            </div>
+
+            <div class="progress" data-role="track">
+              <div class="progress__rail"><span class="progress__avail"></span><span class="progress__played"></span></div>
+              <div class="progress__ticks" data-role="ticks"></div>
+              <span class="progress__edge" aria-hidden="true"></span>
+              <input type="range" min="0" max="100" step="1" value="0" data-role="seek"
+                     aria-label="Thanh tua chương trình trực tiếp, chỉ tua lùi trong phần đã phát">
+            </div>
+            <div class="live__times"><span data-role="cur">00:00</span><span data-role="dur">00:00</span></div>
+
+            <div class="live__controls">
+              <button type="button" class="ctrl" data-role="back10" aria-label="Tua lùi 10 giây">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 3.8v4.6h4.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="12.4" y="15.6" text-anchor="middle" font-size="7.6" font-weight="800" fill="currentColor" font-family="Be Vietnam Pro, Arial, sans-serif">10</text></svg>
+              </button>
+              <button type="button" class="ctrl ctrl--main" data-role="play" aria-label="Tạm dừng"></button>
+              <!-- Không có nút tua tới: đang nghe trực tiếp -->
+              <div class="live__status">
+                <span class="live-pill" data-role="livepill">TRỰC TIẾP</span>
+                <span class="lag" data-role="lag"></span>
+                <button type="button" class="btn btn--live btn--sm" data-role="golive" hidden>Về trực tiếp</button>
+              </div>
+            </div>
+
+            <div class="resume-bar" data-role="resume" hidden>
+              <span>Trình duyệt đã tạm dừng âm thanh khi chuyển trang.</span>
+              <button type="button" class="btn btn--primary btn--sm">Tiếp tục nghe</button>
+            </div>
+          </div>
+
+          <!-- Hết chương trình -->
+          <div class="live__panel" data-when="ended" hidden>
+            <div class="notice">
+              <span class="notice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div>
+                <h2>Chương trình đã kết thúc</h2>
+                <p>Cảm ơn bạn đã đồng hành cùng bản tin sáng. Hẹn gặp lại lúc 8:00 ngày mai.</p>
+                <div class="ended-actions">
+                  <button type="button" class="btn btn--primary" data-role="restart">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 3.8v4.6h4.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span data-role="restart-label">Nghe lại từ đầu</span>
+                  </button>
+                  <a class="btn btn--ghost" href="#da-phat">Các chương trình khác</a>
+                </div>
+              </div>
+            </div>
+            <div class="suggest" data-role="suggest"></div>
+          </div>
+        </div>
+
+        <!-- Các phần trong chương trình -->
+        <aside class="card lineup" aria-labelledby="lineup-title">
+          <div class="lineup__head">
+            <h2 id="lineup-title">Trong chương trình</h2>
+            <span>8 phần · 20–25 phút</span>
+          </div>
+          <ol class="chapters" id="live-chapters"></ol>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ LỊCH HÔM NAY ============ -->
+    <section class="section section--alt" aria-labelledby="today-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <span class="kicker">Lịch phát sóng</span>
+            <h2 class="section__title" id="today-title">Hôm nay trên sóng</h2>
+            <p class="section__desc" id="today-label"></p>
+          </div>
+          <a class="section__link" href="lich-phat-song.html">Xem cả tuần <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+        <ol class="today" id="today-schedule" style="list-style:none;margin:0;padding:0"></ol>
+      </div>
+    </section>
+
+    <!-- ============ CHƯƠNG TRÌNH ĐÃ PHÁT ============ -->
+    <section class="section" id="da-phat" aria-labelledby="archive-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <span class="kicker">Nghe lại</span>
+            <h2 class="section__title" id="archive-title">Chương trình đã phát</h2>
+            <p class="section__desc">Bấm "Nghe lại" để mở trình phát ở cuối trang. Bạn có thể tua tự do, tới hoặc lùi.</p>
+          </div>
+        </div>
+        <!-- Danh sách lấy từ ARCHIVE trong js/config.js -->
+        <div class="grid-cards" id="archive-grid"></div>
+      </div>
+    </section>
+
+    <!-- ============ TIN GIAO THÔNG MỚI ============ -->
+    <section class="section section--alt" aria-labelledby="news-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <span class="kicker">Giao thông</span>
+            <h2 class="section__title" id="news-title">Tin mới cập nhật</h2>
+            <span class="demo-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Dữ liệu minh họa</span>
+          </div>
+          <a class="section__link" href="tin-giao-thong.html">Tất cả tin giao thông <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+        <div class="news-grid" id="latest-news"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/player.js"></script>
+</body>
+</html>

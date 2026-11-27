@@ -1,0 +1,6 @@
+THƯ MỤC ẢNH
+
+Để ảnh bìa cho các chương trình đã phát ở đây (jpg/png/webp, tỉ lệ 16:9, khoảng 960x540).
+Sau đó sửa ô cover của mục tương ứng trong ARCHIVE (js/config.js), ví dụ:
+  cover: 'img/phong-su-cau-sai-gon.jpg'
+Để trống cover: '' thì web tự vẽ ảnh bìa.

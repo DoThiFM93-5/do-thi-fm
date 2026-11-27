@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Giới thiệu – Đô Thị FM 93.5</title>
+  <meta name="description" content="Giới thiệu kênh Đô Thị FM 93.5 MHz, chương trình Bản tin sáng và nhóm thực hiện.">
+  <meta name="theme-color" content="#0A1628">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23FFB21E'/%3E%3Cpath d='M8.5 40 L18 21.5 h4 L31.5 40 Z' fill='%230A1628'/%3E%3Cpath d='M13.6 15.5a6.4 6.4 0 0 1 12.8 0' fill='none' stroke='%230A1628' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='20' cy='15.8' r='2.8' fill='%230A1628'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="about">
+  <a class="skip-link" href="#main">Bỏ qua, đến nội dung chính</a>
+  <header id="site-header" class="site-header"></header>
+
+  <main id="main">
+    <!-- Kênh -->
+    <section class="page-hero">
+      <div class="container">
+        <span class="kicker">Về chúng tôi</span>
+        <h1><span data-cfg="STATION.name">Đô Thị FM</span> – <span data-cfg="STATION.tagline">Kết nối nhịp đường phố</span></h1>
+        <p data-cfg="STATION.intro"></p>
+        <div class="facts">
+          <div class="card fact"><span>Tần số</span><strong data-cfg="STATION.frequencyLabel"></strong></div>
+          <div class="card fact"><span>Thời lượng</span><strong data-cfg="STATION.onAirHours"></strong></div>
+          <div class="card fact"><span>Phủ sóng</span><strong data-cfg="STATION.coverage"></strong></div>
+          <div class="card fact"><span>Hotline</span><strong data-cfg="STATION.hotline"></strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chương trình bản tin sáng -->
+    <section class="section">
+      <div class="container two-col">
+        <div class="prose">
+          <span class="kicker">Chương trình</span>
+          <h2 class="section__title" style="margin-bottom:14px"><span data-cfg="LIVE.title">Bản tin sáng</span></h2>
+          <p>Mỗi sáng lúc <strong>8:00</strong>, khi giờ cao điểm vừa qua đỉnh, bản tin sáng điểm lại những gì đang diễn ra trên đường phố: tuyến nào còn kẹt, chỗ nào vừa xảy ra va chạm, đoạn nào đang phân luồng.</p>
+          <p>Trọng tâm mỗi số là một <strong>phóng sự thực địa</strong> về một vấn đề giao thông cụ thể, kèm ý kiến của chuyên gia, người tham gia giao thông và cơ quan chức năng. Thính giả có thể gọi vào tổng đài để phản ánh ngay trong chương trình.</p>
+          <p>Bản tin dài 20–25 phút, theo phong cách các kênh phát thanh giao thông: nhịp nhanh, thông tin rõ, giọng gần gũi.</p>
+          <p style="margin-top:18px"><a class="btn btn--primary" href="index.html#live-player">Nghe bản tin sáng</a></p>
+        </div>
+        <ul class="card info-list">
+          <li><span>Giờ phát</span><strong>8:00 sáng hằng ngày</strong></li>
+          <li><span>Thời lượng</span><strong>20–25 phút</strong></li>
+          <li><span>Thể loại</span><strong>Bản tin giao thông tổng hợp</strong></li>
+          <li><span>Chủ đề số này</span><strong data-cfg="LIVE.topic"></strong></li>
+          <li><span>Dẫn chương trình</span><strong data-cfg="LIVE.hosts"></strong></li>
+          <li><span>Kênh</span><strong data-cfg="STATION.frequencyLabel"></strong></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Cấu trúc chương trình (lấy từ SECTIONS trong js/config.js) -->
+    <section class="section section--alt" aria-labelledby="structure-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <span class="kicker">Kịch bản</span>
+            <h2 class="section__title" id="structure-title">Cấu trúc chương trình</h2>
+            <p class="section__desc">Tám phần nối tiếp nhau trong khoảng 20–25 phút. Mốc thời gian là dự kiến và sẽ được cập nhật theo bản thu âm.</p>
+          </div>
+        </div>
+        <ol class="steps" id="program-structure"></ol>
+      </div>
+    </section>
+
+    <!-- Nhóm thực hiện (lấy từ TEAM trong js/config.js) -->
+    <section class="section" aria-labelledby="team-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <span class="kicker">Ê-kíp</span>
+            <h2 class="section__title" id="team-title">Nhóm thực hiện</h2>
+            <p class="section__desc">Sản phẩm cuối kì môn <span data-cfg="STATION.course"></span> · <span data-cfg="STATION.className"></span> · <span data-cfg="STATION.school"></span> · <span data-cfg="STATION.lecturer"></span></p>
+          </div>
+        </div>
+        <ul class="team" id="team-list" style="list-style:none;margin:0;padding:0"></ul>
+        <p class="schedule-note" style="margin-top:22px">Đô Thị FM là kênh phát thanh giả định, xây dựng để phục vụ bài tập. Tần số, số liệu giao thông và thông tin liên hệ chỉ mang tính minh họa.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/player.js"></script>
+</body>
+</html>

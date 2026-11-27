@@ -1,0 +1,13 @@
+THƯ MỤC AUDIO – nơi để file thu âm (mp3)
+
+1. Bản tin sáng (phát "trực tiếp" ở trang chủ):
+   - Chép file vào đây với tên: ban-tin-sang.mp3
+   - Hoặc đặt tên khác rồi sửa LIVE.audio trong js/config.js
+   - Sửa mốc thời gian từng phần (SECTIONS) trong js/config.js theo bản thu thật (tính bằng giây)
+
+2. Các chương trình đã phát (nghe lại):
+   - Tạo thư mục audio/luu-tru/ và chép các file mp3 vào đó
+   - Sửa danh sách ARCHIVE trong js/config.js cho khớp tên file
+
+Lưu ý: tên file nên viết không dấu, không khoảng trắng (ví dụ: phong-su-cau-sai-gon.mp3).
+Nếu chưa có file, web sẽ hiện "Chương trình sắp lên sóng" chứ không báo lỗi.

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bản đồ điểm nóng – Đô Thị FM 93.5</title>
+  <meta name="description" content="Bản đồ các điểm nóng giao thông TP.HCM theo mức độ (dữ liệu minh họa).">
+  <meta name="theme-color" content="#0A1628">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23FFB21E'/%3E%3Cpath d='M8.5 40 L18 21.5 h4 L31.5 40 Z' fill='%230A1628'/%3E%3Cpath d='M13.6 15.5a6.4 6.4 0 0 1 12.8 0' fill='none' stroke='%230A1628' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='20' cy='15.8' r='2.8' fill='%230A1628'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Leaflet (bản đồ) qua CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="map">
+  <a class="skip-link" href="#main">Bỏ qua, đến nội dung chính</a>
+  <header id="site-header" class="site-header"></header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <span class="kicker">Bản đồ</span>
+        <h1>Điểm nóng giao thông</h1>
+        <p>Các nút giao, cây cầu và tuyến đường hay ùn ứ ở TP.HCM, xếp theo mức độ. Chọn một điểm trong danh sách để xem trên bản đồ.</p>
+        <span class="demo-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Dữ liệu minh họa – vị trí và mức độ không phản ánh thực tế</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="legend" aria-label="Chú thích mức độ">
+          <span><span class="lv-dot lv-thong-thoang"></span>Thông thoáng</span>
+          <span><span class="lv-dot lv-dong"></span>Đông xe</span>
+          <span><span class="lv-dot lv-un-tac"></span>Ùn tắc</span>
+        </div>
+        <div class="filters" id="map-filters" role="group" aria-label="Lọc theo mức độ"></div>
+        <div class="map-layout">
+          <div class="map-box">
+            <div id="map" role="region" aria-label="Bản đồ điểm nóng giao thông TP.HCM"></div>
+          </div>
+          <!-- Danh sách lấy từ HOTSPOTS trong js/config.js -->
+          <ul class="hs-list" id="hotspot-list" aria-label="Danh sách điểm nóng"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/player.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lịch phát sóng – Đô Thị FM 93.5</title>
+  <meta name="description" content="Lịch phát sóng trong tuần của Đô Thị FM 93.5 MHz.">
+  <meta name="theme-color" content="#0A1628">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23FFB21E'/%3E%3Cpath d='M8.5 40 L18 21.5 h4 L31.5 40 Z' fill='%230A1628'/%3E%3Cpath d='M13.6 15.5a6.4 6.4 0 0 1 12.8 0' fill='none' stroke='%230A1628' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='20' cy='15.8' r='2.8' fill='%230A1628'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="schedule">
+  <a class="skip-link" href="#main">Bỏ qua, đến nội dung chính</a>
+  <header id="site-header" class="site-header"></header>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <span class="kicker">Lịch phát sóng</span>
+        <h1>Lịch phát sóng trong tuần</h1>
+        <p>Đô Thị FM phát sóng 24/7. Hai khung giờ cao điểm sáng và chiều dành cho cập nhật giao thông trực tiếp. Bản tin sáng lên sóng lúc 8:00 mỗi ngày.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div id="day-tabs" class="day-tabs"></div>
+        <p class="schedule-note" id="schedule-day" aria-live="polite"></p>
+        <!-- Lịch lấy từ SCHEDULE trong js/config.js. Chương trình đang phát được tự đánh dấu theo giờ Việt Nam. -->
+        <ol class="schedule-list" id="schedule-list" style="list-style:none;margin:0;padding:0"></ol>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/player.js"></script>
+</body>
+</html>

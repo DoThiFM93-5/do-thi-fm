@@ -21,16 +21,35 @@
       <div class="container">
         <span class="kicker">Lịch phát sóng</span>
         <h1>Lịch phát sóng trong tuần</h1>
-        <p>Đô Thị FM phát sóng 24/7. Hai khung giờ cao điểm sáng và chiều dành cho cập nhật giao thông trực tiếp. Bản tin sáng lên sóng lúc 8:00 mỗi ngày.</p>
+        <p>Đô Thị FM phát sóng 24/7. Hai khung giờ cao điểm sáng và chiều dành cho cập nhật giao thông trực tiếp. Bản tin sáng lên sóng lúc 8:00 mỗi ngày. Lịch đã có đến hết ngày 24/12/2026.</p>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="schedule-top">
       <div class="container">
+        <div class="week-nav">
+          <button type="button" class="ctrl ctrl--sm" id="week-prev" aria-label="Tuần trước"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <strong class="week-nav__label" id="week-label" aria-live="polite"></strong>
+          <button type="button" class="ctrl ctrl--sm" id="week-next" aria-label="Tuần sau"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
         <div id="day-tabs" class="day-tabs"></div>
         <p class="schedule-note" id="schedule-day" aria-live="polite"></p>
         <!-- Lịch lấy từ SCHEDULE trong js/config.js. Chương trình đang phát được tự đánh dấu theo giờ Việt Nam. -->
         <ol class="schedule-list" id="schedule-list" style="list-style:none;margin:0;padding:0"></ol>
+      </div>
+    </section>
+
+    <!-- Điểm nhấn: lấy từ SCHEDULE_SPECIAL trong js/config.js -->
+    <section class="section section--alt" aria-labelledby="hl-title">
+      <div class="container">
+        <div class="section__head">
+          <div>
+            <span class="kicker">Sắp lên sóng</span>
+            <h2 class="section__title" id="hl-title">Điểm nhấn đến 24/12</h2>
+            <p class="section__desc">Các chương trình đặc biệt trong những tuần tới. Bấm vào để xem lịch cả ngày hôm đó.</p>
+          </div>
+        </div>
+        <ul class="highlights" id="schedule-highlights"></ul>
       </div>
     </section>
   </main>

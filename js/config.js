@@ -201,6 +201,61 @@ window.DTFM_CONFIG = {
     ]
   },
 
+  /* Lịch có đến hết ngày nào (trang Lịch phát sóng cho xem tới ngày này). TODO: nhóm cập nhật khi soạn thêm lịch */
+  SCHEDULE_UNTIL: '2026-12-24',
+
+  /* Tiết mục cố định hằng tuần, ghép đè lên khung lịch ở trên.
+     Số ở đầu là thứ trong tuần: 0 = Chủ nhật, 1 = Thứ Hai, ... 6 = Thứ Bảy.
+     Chương trình trùng giờ trong khung sẽ tự được cắt bớt hoặc thay thế. */
+  SCHEDULE_WEEKLY: {
+    3: [
+      { start: '20:00', end: '21:00', title: 'Talkshow giữa tuần', desc: 'Trò chuyện cùng người trẻ thành phố về đi lại, việc làm và những lựa chọn rất riêng.' }
+    ],
+    5: [
+      { start: '23:00', end: '23:30', title: 'Truyện ma đêm khuya', desc: 'Một câu chuyện rùng rợn trước giờ đi ngủ. Nên nghe bằng tai nghe.' }
+    ]
+  },
+
+  /* Chương trình đặc biệt theo ngày ('YYYY-MM-DD'), ghép đè lên lịch của ngày đó.
+     badge: nhãn nhỏ hiện cạnh tên chương trình. */
+  SCHEDULE_SPECIAL: {
+    '2026-11-28': [
+      { start: '19:00', end: '21:00', title: 'Phát lại: Talkshow The Exception', desc: 'Phát lại số talkshow được nghe nhiều nhất tháng 11.', badge: 'Phát lại' }
+    ],
+    '2026-12-01': [
+      { start: '09:00', end: '10:30', title: 'Chuyên đề: Mưa cuối mùa và những điểm ngập', desc: 'Các tuyến hay ngập khi mưa lớn, lộ trình thay thế và cách xử lý khi xe chết máy giữa đường.', badge: 'Chuyên đề' }
+    ],
+    '2026-12-06': [
+      { start: '10:00', end: '12:00', title: 'Talkshow cuối tuần: Đi làm bằng metro', desc: 'Thính giả kể trải nghiệm đi metro số 1 mỗi ngày: tiện ở đâu, còn vướng ở đâu.', badge: 'Đặc biệt' }
+    ],
+    '2026-12-09': [
+      { start: '10:30', end: '11:30', title: 'Hỏi đáp đặc biệt: Đã uống rượu bia, không lái xe', desc: 'Luật sư giải đáp quy định về nồng độ cồn khi tham gia giao thông, mùa tiệc cuối năm đang tới gần.', badge: 'Đặc biệt' }
+    ],
+    '2026-12-12': [
+      { start: '19:00', end: '21:00', title: 'Gala Giai điệu đường phố', desc: 'Hai giờ âm nhạc về Sài Gòn theo yêu cầu của thính giả, có khách mời hát trực tiếp tại phòng thu.', badge: 'Gala' }
+    ],
+    '2026-12-15': [
+      { start: '14:00', end: '16:00', title: 'Chuyên đề: An toàn giao thông mùa lễ cuối năm', desc: 'Lượng xe tăng, tiệc tùng nhiều: những điều cần nhớ để về nhà an toàn.', badge: 'Chuyên đề' }
+    ],
+    '2026-12-18': [
+      { start: '16:00', end: '19:00', title: 'Giờ cao điểm chiều – cuối tuần trước Giáng sinh', desc: 'Cập nhật liên tục các cửa ngõ, bến xe và sân bay trong buổi chiều đông xe nhất tháng.', badge: 'Trực tiếp' }
+    ],
+    '2026-12-19': [
+      { start: '08:25', end: '10:00', title: 'Cuối tuần đi đâu: Sài Gòn mùa Noel', desc: 'Gợi ý điểm vui chơi dịp Giáng sinh và cách đến đó bằng xe buýt, metro để khỏi lo chỗ gửi xe.', badge: 'Đặc biệt' }
+    ],
+    '2026-12-20': [
+      { start: '08:25', end: '10:00', title: 'Nhìn lại giao thông TP.HCM năm 2026', desc: 'Những công trình, quy định mới và câu chuyện trên đường phố đáng nhớ nhất trong năm.', badge: 'Tổng kết' }
+    ],
+    '2026-12-23': [
+      { start: '20:00', end: '22:00', title: 'Sẵn sàng cho đêm Giáng sinh', desc: 'Dự kiến phân luồng khu trung tâm, điểm gửi xe và lời khuyên cho gia đình có trẻ nhỏ.', badge: 'Đặc biệt' }
+    ],
+    '2026-12-24': [
+      { start: '16:00', end: '19:00', title: 'Giờ cao điểm chiều – đêm Giáng sinh', desc: 'Dòng xe đổ về trung tâm từ sớm. Cập nhật các tuyến nên tránh và giờ cấm xe.', badge: 'Trực tiếp' },
+      { start: '19:00', end: '23:00', title: 'Trực tiếp: Đêm Giáng sinh trên phố', desc: 'Phóng viên có mặt quanh khu trung tâm, cập nhật phân luồng, điểm kẹt xe và chỗ gửi xe còn trống.', badge: 'Trực tiếp' },
+      { start: '23:00', end: '24:00', title: 'Nhạc Giáng sinh', desc: 'Những ca khúc Giáng sinh quen thuộc cho người đang trên đường về nhà.', badge: 'Đặc biệt' }
+    ]
+  },
+
   /* ---------------- 7. Tin giao thông – DỮ LIỆU MINH HỌA ----------------
      type: 'un-tac' | 'tai-nan' | 'phan-luong' | 'canh-bao' */
   NEWS: [

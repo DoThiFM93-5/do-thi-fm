@@ -138,10 +138,53 @@
   /* ---------------- Lịch phát sóng: tra cứu ---------------- */
   var DAY_NAMES = ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
   var DAY_SHORT = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-  function dayList(dow) {
+  var DAY_MS = 86400000;
+  function fmtMin(m) { return pad(Math.floor(m / 60)) + ':' + pad(m % 60); }
+  function dateKey(info) { return info.y + '-' + pad(info.mo + 1) + '-' + pad(info.d); }
+  function dayInfo(ms) { var d = new Date(ms); return { ms: ms, y: d.getUTCFullYear(), mo: d.getUTCMonth(), d: d.getUTCDate(), dow: d.getUTCDay() }; }
+  function todayInfo() { var n = vnNow(); return dayInfo(Date.UTC(n.y, n.mo, n.d)); }
+  function parseISODate(s) { var p = String(s || '').split('-').map(Number); return p.length === 3 && !p.some(isNaN) ? Date.UTC(p[0], p[1] - 1, p[2]) : null; }
+
+  /* Ghép các tiết mục (hằng tuần / đặc biệt) đè lên lịch: phần trùng giờ của chương trình cũ bị cắt bỏ */
+  function overlay(list, extras, flag) {
+    if (!extras || !extras.length) return list;
+    var out = [];
+    list.forEach(function (it) {
+      var pieces = [[toMin(it.start), toMin(it.end)]];
+      extras.forEach(function (x) {
+        var xs = toMin(x.start), xe = toMin(x.end);
+        var next = [];
+        pieces.forEach(function (p) {
+          if (xe <= p[0] || xs >= p[1]) { next.push(p); return; }
+          if (xs > p[0]) next.push([p[0], xs]);
+          if (xe < p[1]) next.push([xe, p[1]]);
+        });
+        pieces = next;
+      });
+      pieces.forEach(function (p) {
+        var copy = {};
+        for (var k in it) copy[k] = it[k];
+        copy.start = fmtMin(p[0]); copy.end = fmtMin(p[1]);
+        out.push(copy);
+      });
+    });
+    extras.forEach(function (x) {
+      var copy = {};
+      for (var k in x) copy[k] = x[k];
+      if (flag) copy[flag] = true;
+      out.push(copy);
+    });
+    return out.sort(function (a, b) { return toMin(a.start) - toMin(b.start); });
+  }
+
+  /* Lịch của một ngày cụ thể: khung theo thứ + tiết mục hằng tuần + chương trình đặc biệt của ngày đó */
+  function scheduleFor(info) {
     var S = CFG.SCHEDULE || {};
-    var key = dow === 0 ? 'sunday' : (dow === 6 ? 'saturday' : 'weekday');
-    return (S[key] || S.weekday || []).slice().sort(function (a, b) { return toMin(a.start) - toMin(b.start); });
+    var key = info.dow === 0 ? 'sunday' : (info.dow === 6 ? 'saturday' : 'weekday');
+    var list = (S[key] || S.weekday || []).slice().sort(function (a, b) { return toMin(a.start) - toMin(b.start); });
+    list = overlay(list, (CFG.SCHEDULE_WEEKLY || {})[info.dow], 'weekly');
+    list = overlay(list, (CFG.SCHEDULE_SPECIAL || {})[dateKey(info)], 'special');
+    return list;
   }
   function nowIndex(list, nowMin) {
     for (var i = 0; i < list.length; i++) {
@@ -160,6 +203,7 @@
         '<div class="slot__title">' + esc(it.title) +
           (o.now ? ' <span class="tag-now"><span class="onair-dot"></span>ĐANG PHÁT</span>' : '') +
           (it.featured ? ' <span class="tag-ours">Nổi bật</span>' : '') +
+          (it.badge ? ' <span class="tag-special">' + esc(it.badge) + '</span>' : '') +
         '</div>' +
         '<p class="slot__desc">' + esc(it.desc || '') + '</p>' +
         (it.featured && o.showLink ? '<p style="margin-top:8px"><a class="section__link" href="index.html#live-player">Nghe bản tin sáng ' + ICONS.arrow + '</a></p>' : '') +
@@ -223,7 +267,7 @@
     var el = document.querySelector('[data-onair-title]');
     if (!el) return;
     var n = vnNow();
-    var list = dayList(n.dow);
+    var list = scheduleFor(todayInfo());
     var i = nowIndex(list, n.h * 60 + n.mi);
     el.textContent = i >= 0 ? list[i].title : (STATION.onAirHours || '');
   }
@@ -291,7 +335,7 @@
     function draw() {
       var n = vnNow();
       var nowMin = n.h * 60 + n.mi;
-      var list = dayList(n.dow);
+      var list = scheduleFor(todayInfo());
       var i = Math.max(0, nowIndex(list, nowMin));
       el.innerHTML = list.slice(i, i + 5).map(function (it, k) {
         return slotHTML(it, { now: k === 0 && nowIndex(list, nowMin) >= 0, nowMin: nowMin, showLink: true });
@@ -379,42 +423,79 @@
   }
 
   /* ---------------- Trang lịch phát sóng ---------------- */
+  /* Xem lịch theo từng tuần, từ tuần hiện tại tới tuần chứa ngày SCHEDULE_UNTIL */
   function renderSchedulePage() {
     var tabs = document.getElementById('day-tabs');
     var panel = document.getElementById('schedule-list');
     if (!tabs || !panel) return;
-    var n = vnNow();
-    var offset = (n.dow + 6) % 7;               // tuần bắt đầu từ Thứ Hai
-    var base = Date.UTC(n.y, n.mo, n.d) - offset * 86400000;
-    var days = [];
-    for (var k = 0; k < 7; k++) {
-      var d = new Date(base + k * 86400000);
-      days.push({ dow: d.getUTCDay(), date: pad(d.getUTCDate()) + '/' + pad(d.getUTCMonth() + 1), today: k === offset });
-    }
-    var selected = offset;
+    var prevBtn = document.getElementById('week-prev');
+    var nextBtn = document.getElementById('week-next');
+    var weekLabel = document.getElementById('week-label');
+    var note = document.getElementById('schedule-day');
+
+    var today = todayInfo();
+    var until = parseISODate(CFG.SCHEDULE_UNTIL);
+    if (until == null) until = today.ms + 6 * DAY_MS;
+    var week0 = today.ms - ((today.dow + 6) % 7) * DAY_MS;          // Thứ Hai của tuần này
+    var weekCount = Math.max(1, Math.floor((until - week0) / (7 * DAY_MS)) + 1);
+    var week = 0;
+    var selected = (today.dow + 6) % 7;
+
+    function dayAt(w, i) { return dayInfo(week0 + (w * 7 + i) * DAY_MS); }
+    function ddmm(info) { return pad(info.d) + '/' + pad(info.mo + 1); }
+    function hasSchedule(info) { return info.ms <= until; }
+
     tabs.setAttribute('role', 'tablist');
     tabs.setAttribute('aria-label', 'Chọn ngày trong tuần');
-    tabs.innerHTML = days.map(function (d, i) {
-      return '<button type="button" role="tab" class="day-tab' + (d.today ? ' is-today' : '') + '" id="day-tab-' + i + '" aria-controls="schedule-list" aria-selected="' + (i === selected) + '" tabindex="' + (i === selected ? 0 : -1) + '">' +
-        '<strong>' + DAY_SHORT[d.dow] + '</strong><span>' + (d.today ? 'Hôm nay' : d.date) + '</span></button>';
-    }).join('');
     panel.setAttribute('role', 'tabpanel');
 
-    function draw() {
-      var d = days[selected];
-      var now = vnNow();
-      var nowMin = now.h * 60 + now.mi;
-      var list = dayList(d.dow);
-      var idx = d.today ? nowIndex(list, nowMin) : -1;
-      panel.setAttribute('aria-labelledby', 'day-tab-' + selected);
-      panel.innerHTML = list.map(function (it, i) {
-        return slotHTML(it, { now: i === idx, past: d.today && toMin(it.end) <= nowMin, nowMin: nowMin, showLink: true });
-      }).join('');
-      var note = document.getElementById('schedule-day');
-      if (note) note.textContent = DAY_NAMES[d.dow] + ' ' + d.date + (d.today ? ' (hôm nay)' : '') + ' · giờ Việt Nam';
+    function buildTabs() {
+      var html = '';
+      for (var i = 0; i < 7; i++) {
+        var info = dayAt(week, i);
+        var isToday = info.ms === today.ms;
+        var ok = hasSchedule(info);
+        var hasSpecial = !!(CFG.SCHEDULE_SPECIAL || {})[dateKey(info)];
+        html += '<button type="button" role="tab" class="day-tab' + (isToday ? ' is-today' : '') + (hasSpecial ? ' has-special' : '') + '" id="day-tab-' + i + '"' +
+          ' aria-controls="schedule-list" aria-selected="' + (i === selected) + '" tabindex="' + (i === selected ? 0 : -1) + '"' +
+          (ok ? '' : ' disabled') + ' aria-label="' + DAY_NAMES[info.dow] + ' ' + ddmm(info) + (isToday ? ', hôm nay' : '') + (hasSpecial ? ', có chương trình đặc biệt' : '') + (ok ? '' : ', chưa có lịch') + '">' +
+          '<strong>' + DAY_SHORT[info.dow] + '</strong><span>' + (isToday ? 'Hôm nay' : ddmm(info)) + '</span></button>';
+      }
+      tabs.innerHTML = html;
+      var first = dayAt(week, 0), last = dayAt(week, 6);
+      if (weekLabel) weekLabel.textContent = (week === 0 ? 'Tuần này · ' : 'Tuần ' + (week + 1) + ' · ') + ddmm(first) + ' – ' + ddmm(last) + '/' + last.y;
+      if (prevBtn) prevBtn.disabled = week <= 0;
+      if (nextBtn) nextBtn.disabled = week >= weekCount - 1;
     }
+
+    function draw() {
+      var info = dayAt(week, selected);
+      var isToday = info.ms === today.ms;
+      panel.setAttribute('aria-labelledby', 'day-tab-' + selected);
+      if (!hasSchedule(info)) {
+        panel.innerHTML = '<li class="empty">Lịch từ ngày ' + ddmm(info) + ' sẽ được cập nhật sau.</li>';
+      } else {
+        var now = vnNow();
+        var nowMin = now.h * 60 + now.mi;
+        var list = scheduleFor(info);
+        var idx = isToday ? nowIndex(list, nowMin) : -1;
+        var past = info.ms < today.ms;
+        panel.innerHTML = list.map(function (it, i) {
+          return slotHTML(it, { now: i === idx, past: past || (isToday && toMin(it.end) <= nowMin), nowMin: nowMin, showLink: true });
+        }).join('');
+      }
+      if (note) note.textContent = DAY_NAMES[info.dow] + ' ' + ddmm(info) + '/' + info.y + (isToday ? ' (hôm nay)' : '') + ' · giờ Việt Nam';
+    }
+
     function select(i, focus) {
-      selected = (i + 7) % 7;
+      // Bỏ qua ngày chưa có lịch khi dùng phím mũi tên
+      var dir = i < selected ? -1 : 1;
+      for (var step = 0; step < 7; step++) {
+        var j = ((i % 7) + 7) % 7;
+        if (hasSchedule(dayAt(week, j))) { i = j; break; }
+        i += dir;
+      }
+      selected = ((i % 7) + 7) % 7;
       tabs.querySelectorAll('[role="tab"]').forEach(function (b, j) {
         b.setAttribute('aria-selected', j === selected ? 'true' : 'false');
         b.tabIndex = j === selected ? 0 : -1;
@@ -422,18 +503,62 @@
       });
       draw();
     }
+
+    function goWeek(w, dayIdx) {
+      week = Math.max(0, Math.min(weekCount - 1, w));
+      if (typeof dayIdx === 'number') selected = dayIdx;
+      else selected = week === 0 ? (today.dow + 6) % 7 : 0;
+      if (!hasSchedule(dayAt(week, selected))) selected = 0;
+      buildTabs();
+      draw();
+    }
+
     tabs.addEventListener('click', function (e) {
       var b = e.target.closest('[role="tab"]');
-      if (b) select(Number(b.id.replace('day-tab-', '')));
+      if (b && !b.disabled) select(Number(b.id.replace('day-tab-', '')));
     });
     tabs.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowRight') { e.preventDefault(); select(selected + 1, true); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); select(selected - 1, true); }
     });
-    draw();
+    if (prevBtn) prevBtn.addEventListener('click', function () { goWeek(week - 1); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { goWeek(week + 1); });
+
+    // Điểm nhấn sắp tới: các chương trình đặc biệt từ hôm nay đến hết lịch
+    var hl = document.getElementById('schedule-highlights');
+    if (hl) {
+      var items = [];
+      Object.keys(CFG.SCHEDULE_SPECIAL || {}).sort().forEach(function (k) {
+        var ms = parseISODate(k);
+        if (ms == null || ms < today.ms || ms > until) return;
+        CFG.SCHEDULE_SPECIAL[k].forEach(function (it) { items.push({ ms: ms, it: it }); });
+      });
+      if (!items.length) {
+        hl.closest('section').hidden = true;
+      } else {
+        hl.innerHTML = items.map(function (x) {
+          var info = dayInfo(x.ms);
+          return '<li><button type="button" class="hl-item" data-ms="' + x.ms + '">' +
+            '<span class="hl-date"><strong>' + pad(info.d) + '/' + pad(info.mo + 1) + '</strong><small>' + DAY_NAMES[info.dow] + '</small></span>' +
+            '<span class="hl-body"><span class="hl-time">' + esc(x.it.start) + ' – ' + esc(x.it.end) + (x.it.badge ? ' · ' + esc(x.it.badge) : '') + '</span>' +
+            '<strong>' + esc(x.it.title) + '</strong></span></button></li>';
+        }).join('');
+        hl.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-ms]');
+          if (!b) return;
+          var ms = Number(b.getAttribute('data-ms'));
+          var offsetDays = Math.round((ms - week0) / DAY_MS);
+          goWeek(Math.floor(offsetDays / 7), offsetDays % 7);
+          var anchor = document.getElementById('schedule-top');
+          if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var tab = tabs.querySelector('[aria-selected="true"]');
+          if (tab) tab.focus({ preventScroll: true });
+        });
+      }
+    }
+
+    goWeek(0);
     setInterval(draw, 30000);
-    var cur = tabs.querySelector('[aria-selected="true"]');
-    if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'nearest', inline: 'center' });
   }
 
   /* ---------------- Trang bản đồ ---------------- */
